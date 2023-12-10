@@ -9,7 +9,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import xyz.funnyboy.auth.service.SysRoleService;
-import xyz.funnyboy.common.handler.VectorXException;
 import xyz.funnyboy.common.result.Result;
 import xyz.funnyboy.model.system.SysRole;
 import xyz.funnyboy.model.system.SysRoleQueryVO;
@@ -27,13 +26,13 @@ public class SysRoleController
     @ApiOperation(value = "获取全部角色列表")
     @GetMapping("findAll")
     public Result<List<SysRole>> getAll() {
-        try {
-            int a = 10 / 0;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            throw new VectorXException(20001, "出现自定义异常");
-        }
+        // try {
+        //     int a = 10 / 0;
+        // }
+        // catch (ArithmeticException e) {
+        //     e.printStackTrace();
+        //     throw new VectorXException(20001, "出现自定义异常");
+        // }
         final List<SysRole> sysRoleList = sysRoleService.list();
         return Result.ok(sysRoleList);
     }
@@ -45,7 +44,7 @@ public class SysRoleController
                     int page,
             @PathVariable("limit")
                     int limit, SysRoleQueryVO sysRoleQueryVO) {
-        Page<SysRole> pageParam = new Page<>(page, limit);
+        Page<SysRole> pageModel = new Page<>(page, limit);
 
         final LambdaQueryWrapper<SysRole> wrapper = new LambdaQueryWrapper<>();
         final String roleName = sysRoleQueryVO.getRoleName();
@@ -53,7 +52,7 @@ public class SysRoleController
             wrapper.like(SysRole::getRoleName, roleName);
         }
 
-        final Page<SysRole> pageModel = sysRoleService.page(pageParam, wrapper);
+        sysRoleService.page(pageModel, wrapper);
         return Result.ok(pageModel);
     }
 
@@ -72,8 +71,13 @@ public class SysRoleController
             @RequestBody
             @Validated
                     SysRole role) {
-        sysRoleService.save(role);
-        return Result.ok();
+        final boolean save = sysRoleService.save(role);
+        if (save) {
+            return Result.ok();
+        }
+        else {
+            return Result.fail();
+        }
     }
 
     @ApiOperation(value = "修改角色")
@@ -90,8 +94,13 @@ public class SysRoleController
     public Result<String> remove(
             @PathVariable
                     Long id) {
-        sysRoleService.removeById(id);
-        return Result.ok();
+        final boolean remove = sysRoleService.removeById(id);
+        if (remove) {
+            return Result.ok();
+        }
+        else {
+            return Result.fail();
+        }
     }
 
     @ApiOperation(value = "根据id列表删除")
@@ -99,7 +108,12 @@ public class SysRoleController
     public Result<String> batchRemove(
             @RequestBody
                     List<Long> idList) {
-        sysRoleService.removeByIds(idList);
-        return Result.ok();
+        final boolean remove = sysRoleService.removeByIds(idList);
+        if (remove) {
+            return Result.ok();
+        }
+        else {
+            return Result.fail();
+        }
     }
 }
