@@ -21,13 +21,13 @@
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-spring-boot-starter</artifactId>
-            <scope>provided </scope>
+            <scope>provided</scope>
         </dependency>
         <!-- 快速开发MyBatis -->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <scope>provided </scope>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
