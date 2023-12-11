@@ -54,7 +54,28 @@ export const constantRoutes = [
       meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
   },
-
+  // 系统管理
+  {
+    path: '/system',
+    component: Layout,
+    meta: {
+      title: '系统管理',
+      icon: 'el-icon-s-tools'
+    },
+    alwaysShow: true,
+    children: [
+      // 角色管理
+      {
+        path: 'sysRole',
+        component: () => import('@/views/system/sysRole/list'),
+        meta: {
+          title: '角色管理',
+          icon: 'el-icon-s-help'
+        },
+      }
+    ]
+  },
+  
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
