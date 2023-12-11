@@ -36,7 +36,19 @@ module.exports = {
       warnings: false,
       errors: true
     },
-    before: require('./mock/mock-server.js')
+    // before: require('./mock/mock-server.js')
+    proxy: {
+      // 匹配所有以 '/dev-api'开头的请求路径
+      "/dev-api": {
+        target: "http://localhost:8800",
+        // 支持跨域
+        changeOrigin: true,
+        // 重写路径: 去掉路径中开头的'/dev-api'
+        pathRewrite: {
+          "^/dev-api": "",
+        },
+      },
+    },
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
