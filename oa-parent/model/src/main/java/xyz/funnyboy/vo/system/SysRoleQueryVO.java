@@ -1,6 +1,6 @@
 //
 //
-package xyz.funnyboy.model.system;
+package xyz.funnyboy.vo.system;
 
 import lombok.Data;
 

@@ -6,17 +6,40 @@ use `oa`;
 
 CREATE TABLE `sys_role`
 (
-    `id`          bigint(20)  NOT NULL AUTO_INCREMENT COMMENT '角色id',
-    `role_name`   varchar(20) NOT NULL DEFAULT '' COMMENT '角色名称',
-    `role_code`   varchar(20)          DEFAULT NULL COMMENT '角色编码',
-    `description` varchar(255)         DEFAULT NULL COMMENT '描述',
-    `create_time` timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time` timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    `is_deleted`  tinyint(3)  NOT NULL DEFAULT '0' COMMENT '删除标记（0:不可用 1:可用）',
-    PRIMARY KEY (`id`)
+   `id`          bigint(20)  NOT NULL AUTO_INCREMENT COMMENT '角色id',
+   `role_name`   varchar(20) NOT NULL DEFAULT '' COMMENT '角色名称',
+   `role_code`   varchar(20)          DEFAULT NULL COMMENT '角色编码',
+   `description` varchar(255)         DEFAULT NULL COMMENT '描述',
+   `create_time` timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+   `update_time` timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+   `is_deleted`  tinyint(3)  NOT NULL DEFAULT '0' COMMENT '删除标记（0:不可用 1:可用）',
+   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 9
   DEFAULT CHARSET = utf8 COMMENT ='角色';
+
+
+CREATE TABLE `sys_user`
+(
+   `id`          bigint(20)  NOT NULL AUTO_INCREMENT COMMENT '会员id',
+   `username`    varchar(20) NOT NULL DEFAULT '' COMMENT '用户名',
+   `password`    varchar(32) NOT NULL DEFAULT '' COMMENT '密码',
+   `name`        varchar(50)          DEFAULT NULL COMMENT '姓名',
+   `phone`       varchar(11)          DEFAULT NULL COMMENT '手机',
+   `head_url`    varchar(200)         DEFAULT NULL COMMENT '头像地址',
+   `dept_id`     bigint(20)           DEFAULT NULL COMMENT '部门id',
+   `post_id`     bigint(20)           DEFAULT NULL COMMENT '岗位id',
+   `open_id`     varchar(255)         DEFAULT NULL COMMENT '微信openId',
+   `description` varchar(255)         DEFAULT NULL COMMENT '描述',
+   `status`      tinyint(3)           DEFAULT NULL COMMENT '状态（1：正常 0：停用）',
+   `create_time` timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+   `update_time` timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+   `is_deleted`  tinyint(3)  NOT NULL DEFAULT '0' COMMENT '删除标记（0:不可用 1:可用）',
+   PRIMARY KEY (`id`),
+   UNIQUE KEY `idx_username` (`username`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 13
+  DEFAULT CHARSET = utf8mb4 COMMENT ='用户表';
 ```
 
 ## 术语

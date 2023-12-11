@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import xyz.funnyboy.auth.service.SysRoleService;
 import xyz.funnyboy.common.result.Result;
 import xyz.funnyboy.model.system.SysRole;
-import xyz.funnyboy.model.system.SysRoleQueryVO;
+import xyz.funnyboy.vo.system.SysRoleQueryVO;
 
 import java.util.List;
 
