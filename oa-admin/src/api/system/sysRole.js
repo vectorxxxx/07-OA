@@ -35,4 +35,20 @@ export default {
       data: role,
     });
   },
+  /* 
+  修改角色 
+  */
+  getById(id) {
+    return request({
+      url: `${api_name}/get/${id}`,
+      method: "get",
+    });
+  },
+  updateById(role) {
+    return request({
+      url: `${api_name}/update`,
+      method: "put",
+      data: role,
+    });
+  },
 };

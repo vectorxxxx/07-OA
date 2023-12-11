@@ -116,6 +116,7 @@ export default {
   },
   // 定义方法
   methods: {
+    // 获取角色列表
     fetchData(current = 1) {
       this.page = current
       api
@@ -130,6 +131,7 @@ export default {
       this.searchObj = {}
       this.fetchData()
     },
+    // 删除角色
     removeDataById(id) {
       this.$confirm('此操作将永久删除该角色, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -142,9 +144,11 @@ export default {
         this.$message.success(response.message || '删除成功')
       })
     },
+    // 添加角色
     add() {
       this.dialogVisible = true
     },
+    // 新增或修改
     saveOrUpdate() {
       this.saveBtnDisabled = true
       if (!this.sysRole.id) {
@@ -153,9 +157,27 @@ export default {
         this.updateData()
       }
     },
+    // 新增角色
     saveData() {
       api.save(this.sysRole).then((response) => {
         this.$message.success(response.message || '添加成功')
+        this.dialogVisible = false
+        this.fetchData(this.page)
+      })
+    },
+    // 修改角色
+    edit(id) {
+      this.dialogVisible = true
+      this.fetchDataById(id)
+    },
+    fetchDataById(id) {
+      api.getById(id).then(response => {
+        this.sysRole = response.data
+      })
+    },
+    updateData() {
+      api.updateById(this.sysRole).then(response => {
+        this.$message.success(response.message || '修改成功')
         this.dialogVisible = false
         this.fetchData(this.page)
       })
