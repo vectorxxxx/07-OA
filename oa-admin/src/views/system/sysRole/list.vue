@@ -1,5 +1,11 @@
 <template>
   <div class="app-container">
+    <!-- 工具条 -->
+    <div class="tools-div">
+      <el-button type="success" icon="el-icon-plus" size="mini" @click="add()">添 加</el-button>
+      <el-button type="danger" icon="el-icon-delete" size="mini" @click="batchRemove()">批量删除</el-button>
+    </div>
+    <br/>
     <!-- 查询表单 -->
     <div class="search-div">
       <el-form label-width="70px" size="small">
@@ -23,7 +29,6 @@
             @click="fetchData()"
           >搜索</el-button>
           <el-button icon="el-icon-refresh" size="mini" @click="resetData()">重置</el-button>
-          <el-button type="success" icon="el-icon-plus" size="mini" @click="add()"></el-button>
         </el-row>
       </el-form>
     </div>
@@ -36,6 +41,7 @@
       style="width: 100%; margin-top: 10px"
       @selection-change="handleSelectionChange"
     >
+      <!-- 复选框 -->
       <el-table-column type="selection" />
 
       <el-table-column label="序号" width="70" align="center">
@@ -180,6 +186,31 @@ export default {
         this.$message.success(response.message || '修改成功')
         this.dialogVisible = false
         this.fetchData(this.page)
+      })
+    },
+    // 批量删除角色
+    handleSelectionChange(selection) {
+      console.log(selection)
+      this.multipleSelection = selection
+    },
+    batchRemove() {
+      if (this.multipleSelection.length === 0) {
+        this.$message.warning('请选择要删除的记录！')
+        return
+      }
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let ids = []
+        this.multipleSelection.forEach(item => {
+          ids.push(item.id)
+        })
+        return api.batchRemove(ids)
+      }).then((response) => {
+        this.$message.success(response.message || '删除成功')
+        this.fetchData()
       })
     }
   },

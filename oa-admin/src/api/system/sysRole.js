@@ -51,4 +51,14 @@ export default {
       data: role,
     });
   },
+  /* 
+  批量删除
+  */
+  batchRemove(ids) {
+    return request({
+      url: `${api_name}/batchRemove`,
+      method: "delete",
+      data: ids,
+    });
+  },
 };
