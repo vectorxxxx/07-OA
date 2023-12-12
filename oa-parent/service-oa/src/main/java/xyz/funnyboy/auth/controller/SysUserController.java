@@ -123,4 +123,25 @@ public class SysUserController
                          .message(e.getMessage());
         }
     }
+
+    @ApiOperation("更新状态")
+    @GetMapping("/updateStatus/{id}/{status}")
+    public Result<Object> updateStatus(
+            @PathVariable("id")
+                    Long id,
+            @PathVariable("status")
+                    Integer status) {
+        try {
+            final boolean update = sysUserService.updateStatus(id, status);
+            return update ?
+                    Result.ok() :
+                    Result.fail()
+                          .message("更新失败");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail()
+                         .message(e.getMessage());
+        }
+    }
 }

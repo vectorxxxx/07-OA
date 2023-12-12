@@ -40,6 +40,22 @@ CREATE TABLE `sys_user`
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 13
   DEFAULT CHARSET = utf8mb4 COMMENT ='用户表';
+
+
+CREATE TABLE `sys_user_role`
+(
+   `id`          bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+   `role_id`     bigint(20) NOT NULL DEFAULT '0' COMMENT '角色id',
+   `user_id`     bigint(20) NOT NULL DEFAULT '0' COMMENT '用户id',
+   `create_time` timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+   `update_time` timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+   `is_deleted`  tinyint(3) NOT NULL DEFAULT '0' COMMENT '删除标记（0:不可用 1:可用）',
+   PRIMARY KEY (`id`),
+   KEY `idx_role_id` (`role_id`),
+   KEY `idx_admin_id` (`user_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 11
+  DEFAULT CHARSET = utf8 COMMENT ='用户角色';
 ```
 
 ## 术语

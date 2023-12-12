@@ -6,6 +6,15 @@ import request from "@/utils/request";
 const api_name = "/admin/system/sysRole";
 
 export default {
+  /* 
+  获取全部角色列表
+  */
+  findAll() {
+    return request({
+      url: `${api_name}/findAll`,
+      method: "get",
+    });
+  },
   /*
   获取角色分页列表(带搜索)
   */
@@ -59,6 +68,25 @@ export default {
       url: `${api_name}/batchRemove`,
       method: "delete",
       data: ids,
+    });
+  },
+  /* 
+  根据用户获取角色数据
+  */
+  getRoles(userId) {
+    return request({
+      url: `${api_name}/toAssign/${userId}`,
+      method: "get",
+    });
+  },
+  /* 
+  根据用户分配角色
+  */
+  assignRoles(assignRoleVO) {
+    return request({
+      url: `${api_name}/doAssign`,
+      method: "post",
+      data: assignRoleVO,
     });
   },
 };

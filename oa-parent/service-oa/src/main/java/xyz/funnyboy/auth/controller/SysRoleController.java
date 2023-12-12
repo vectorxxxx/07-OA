@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import xyz.funnyboy.auth.service.SysRoleService;
 import xyz.funnyboy.common.result.Result;
 import xyz.funnyboy.model.system.SysRole;
+import xyz.funnyboy.vo.system.AssignRoleVO;
 import xyz.funnyboy.vo.system.SysRoleQueryVO;
 
 import java.util.List;
+import java.util.Map;
 
 @Api(tags = "角色管理")
 @RestController
@@ -114,6 +116,31 @@ public class SysRoleController
         }
         else {
             return Result.fail();
+        }
+    }
+
+    @ApiOperation(value = "根据用户获取角色数据")
+    @GetMapping("/toAssign/{userId}")
+    public Result<Map<String, Object>> toAssign(
+            @PathVariable("userId")
+                    Long userId) {
+        Map<String, Object> roleMap = sysRoleService.findRoleByUserId(userId);
+        return Result.ok(roleMap);
+    }
+
+    @ApiOperation(value = "根据用户分配角色")
+    @PostMapping("/doAssign")
+    public Result<Object> doAssign(
+            @RequestBody
+                    AssignRoleVO assignRoleVO) {
+        try {
+            sysRoleService.doAssign(assignRoleVO);
+            return Result.ok();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail()
+                         .message(e.getMessage());
         }
     }
 }
