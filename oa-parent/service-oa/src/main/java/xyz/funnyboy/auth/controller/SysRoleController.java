@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
@@ -22,6 +24,8 @@ import java.util.Map;
 @RequestMapping("/admin/system/sysRole")
 public class SysRoleController
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SysRoleController.class);
+
     @Autowired
     private SysRoleService sysRoleService;
 
@@ -32,7 +36,7 @@ public class SysRoleController
         //     int a = 10 / 0;
         // }
         // catch (ArithmeticException e) {
-        //     e.printStackTrace();
+        //     LOGGER.error(e.getMessage(), e);
         //     throw new VectorXException(20001, "出现自定义异常");
         // }
         final List<SysRole> sysRoleList = sysRoleService.list();
@@ -138,7 +142,7 @@ public class SysRoleController
             return Result.ok();
         }
         catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
             return Result.fail()
                          .message(e.getMessage());
         }

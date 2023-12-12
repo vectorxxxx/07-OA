@@ -2,6 +2,8 @@ package xyz.funnyboy.auth.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import xyz.funnyboy.auth.service.SysMenuService;
@@ -16,6 +18,8 @@ import java.util.List;
 @RequestMapping("/admin/system/sysMenu")
 public class SysMenuController
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SysMenuController.class);
+
     @Autowired
     private SysMenuService sysMenuService;
 
@@ -39,7 +43,7 @@ public class SysMenuController
                           .message("新增失败");
         }
         catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
             return Result.fail()
                          .message(e.getMessage());
         }
@@ -58,7 +62,7 @@ public class SysMenuController
                           .message("修改失败");
         }
         catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
             return Result.fail()
                          .message(e.getMessage());
         }
@@ -77,7 +81,7 @@ public class SysMenuController
                           .message("删除失败");
         }
         catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
             return Result.fail()
                          .message(e.getMessage());
         }
@@ -102,7 +106,7 @@ public class SysMenuController
             return Result.ok();
         }
         catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
             return Result.fail()
                          .message(e.getMessage());
         }

@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,8 @@ import xyz.funnyboy.vo.system.SysUserQueryVO;
 @RequestMapping("/admin/system/sysUser")
 public class SysUserController
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SysUserController.class);
+
     @Autowired
     private SysUserService sysUserService;
 
@@ -80,7 +84,7 @@ public class SysUserController
                           .message("新增失败");
         }
         catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
             return Result.fail()
                          .message(e.getMessage());
         }
@@ -99,7 +103,7 @@ public class SysUserController
                           .message("修改失败");
         }
         catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
             return Result.fail()
                          .message(e.getMessage());
         }
@@ -118,7 +122,7 @@ public class SysUserController
                           .message("删除失败");
         }
         catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
             return Result.fail()
                          .message(e.getMessage());
         }
@@ -139,7 +143,7 @@ public class SysUserController
                           .message("更新失败");
         }
         catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
             return Result.fail()
                          .message(e.getMessage());
         }

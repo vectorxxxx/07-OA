@@ -13,4 +13,12 @@ public interface SysUserService extends IService<SysUser>
      * @return boolean
      */
     boolean updateStatus(Long id, Integer status);
+
+    /**
+     * 根据用户名获取用户
+     *
+     * @param username
+     * @return {@link SysUser}
+     */
+    SysUser getByUsername(String username);
 }

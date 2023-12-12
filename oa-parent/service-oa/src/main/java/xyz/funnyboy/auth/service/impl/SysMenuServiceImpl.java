@@ -23,9 +23,6 @@ import java.util.stream.Collectors;
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements SysMenuService
 {
     @Autowired
-    private SysMenuMapper sysMenuMapper;
-
-    @Autowired
     private SysRoleMenuService sysRoleMenuService;
 
     /**
@@ -57,7 +54,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         if (count > 0) {
             throw new VectorXException(501, "菜单不能删除");
         }
-        final int delete = sysMenuMapper.deleteById(id);
+        final int delete = this.getBaseMapper()
+                               .deleteById(id);
         return delete > 0;
     }
 
