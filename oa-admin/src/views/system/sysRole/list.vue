@@ -2,10 +2,18 @@
   <div class="app-container">
     <!-- 工具条 -->
     <div class="tools-div">
-      <el-button type="success" icon="el-icon-plus" size="mini" @click="add()">添 加</el-button>
-      <el-button type="danger" icon="el-icon-delete" size="mini" @click="batchRemove()">批量删除</el-button>
+      <el-button type="success" icon="el-icon-plus" size="mini" @click="add()"
+        >添 加</el-button
+      >
+      <el-button
+        type="danger"
+        icon="el-icon-delete"
+        size="mini"
+        @click="batchRemove()"
+        >批量删除</el-button
+      >
     </div>
-    <br/>
+    <br />
     <!-- 查询表单 -->
     <div class="search-div">
       <el-form label-width="70px" size="small">
@@ -27,8 +35,11 @@
             size="mini"
             :loading="loading"
             @click="fetchData()"
-          >搜索</el-button>
-          <el-button icon="el-icon-refresh" size="mini" @click="resetData()">重置</el-button>
+            >搜索</el-button
+          >
+          <el-button icon="el-icon-refresh" size="mini" @click="resetData()"
+            >重置</el-button
+          >
         </el-row>
       </el-form>
     </div>
@@ -69,6 +80,13 @@
             title="删除"
             @click="removeDataById(scope.row.id)"
           />
+          <el-button
+            type="warning"
+            icon="el-icon-baseball"
+            size="mini"
+            @click="showAssignAuth(scope.row)"
+            title="分配权限"
+          />
         </template>
       </el-table-column>
     </el-table>
@@ -83,23 +101,46 @@
     />
     <!-- 弹出层 -->
     <el-dialog title="添加/修改" :visible.sync="dialogVisible" width="40%">
-      <el-form ref="dataForm" :model="sysRole" label-width="150px" size="small" style="padding-right: 40px;">
+      <el-form
+        ref="dataForm"
+        :model="sysRole"
+        label-width="150px"
+        size="small"
+        style="padding-right: 40px"
+      >
         <el-form-item label="角色名称">
-          <el-input v-model="sysRole.roleName" placeholder="角色名称"></el-input>
+          <el-input
+            v-model="sysRole.roleName"
+            placeholder="角色名称"
+          ></el-input>
         </el-form-item>
         <el-form-item label="角色编码">
-          <el-input v-model="sysRole.roleCode" placeholder="角色编码"></el-input>
+          <el-input
+            v-model="sysRole.roleCode"
+            placeholder="角色编码"
+          ></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button size="small" icon="el-icon-refresh-right" @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" size="small" icon="el-icon-check" @click="saveOrUpdate()">确 定</el-button>
+        <el-button
+          size="small"
+          icon="el-icon-refresh-right"
+          @click="dialogVisible = false"
+          >取 消</el-button
+        >
+        <el-button
+          type="primary"
+          size="small"
+          icon="el-icon-check"
+          @click="saveOrUpdate()"
+          >确 定</el-button
+        >
       </span>
     </el-dialog>
   </div>
 </template>
 <script>
-import api from '@/api/system/sysRole'
+import api from "@/api/system/sysRole";
 export default {
   // 定义数据模型
   data() {
@@ -118,101 +159,112 @@ export default {
   },
   // 页面渲染成功前获取数据
   created() {
-    this.fetchData()
+    this.fetchData();
   },
   // 定义方法
   methods: {
     // 获取角色列表
     fetchData(current = 1) {
-      this.page = current
+      this.page = current;
       api
         .getPageList(this.page, this.limit, this.searchObj)
         .then((response) => {
-          this.list = response.data.records
-          this.total = response.data.total
+          this.list = response.data.records;
+          this.total = response.data.total;
         });
     },
     resetData() {
-      console.log('删除查询表单')
-      this.searchObj = {}
-      this.fetchData()
+      console.log("删除查询表单");
+      this.searchObj = {};
+      this.fetchData();
     },
     // 删除角色
     removeDataById(id) {
-      this.$confirm('此操作将永久删除该角色, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        return api.removeById(id)
-      }).then((response) => {
-        this.fetchData(this.page)
-        this.$message.success(response.message || '删除成功')
+      this.$confirm("此操作将永久删除该角色, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
+        .then(() => {
+          return api.removeById(id);
+        })
+        .then((response) => {
+          this.fetchData(this.page);
+          this.$message.success(response.message || "删除成功");
+        });
     },
     // 添加角色
     add() {
-      this.dialogVisible = true
+      this.dialogVisible = true;
     },
     // 新增或修改
     saveOrUpdate() {
-      this.saveBtnDisabled = true
+      this.saveBtnDisabled = true;
       if (!this.sysRole.id) {
-        this.saveData()
+        this.saveData();
       } else {
-        this.updateData()
+        this.updateData();
       }
     },
     // 新增角色
     saveData() {
       api.save(this.sysRole).then((response) => {
-        this.$message.success(response.message || '添加成功')
-        this.dialogVisible = false
-        this.fetchData(this.page)
-      })
+        this.$message.success(response.message || "添加成功");
+        this.dialogVisible = false;
+        this.fetchData(this.page);
+      });
     },
     // 修改角色
     edit(id) {
-      this.dialogVisible = true
-      this.fetchDataById(id)
+      this.dialogVisible = true;
+      this.fetchDataById(id);
     },
     fetchDataById(id) {
-      api.getById(id).then(response => {
-        this.sysRole = response.data
-      })
+      api.getById(id).then((response) => {
+        this.sysRole = response.data;
+      });
     },
     updateData() {
-      api.updateById(this.sysRole).then(response => {
-        this.$message.success(response.message || '修改成功')
-        this.dialogVisible = false
-        this.fetchData(this.page)
-      })
+      api.updateById(this.sysRole).then((response) => {
+        this.$message.success(response.message || "修改成功");
+        this.dialogVisible = false;
+        this.fetchData(this.page);
+      });
     },
     // 批量删除角色
     handleSelectionChange(selection) {
-      console.log(selection)
-      this.multipleSelection = selection
+      console.log(selection);
+      this.multipleSelection = selection;
     },
     batchRemove() {
       if (this.multipleSelection.length === 0) {
-        this.$message.warning('请选择要删除的记录！')
-        return
+        this.$message.warning("请选择要删除的记录！");
+        return;
       }
-      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        let ids = []
-        this.multipleSelection.forEach(item => {
-          ids.push(item.id)
-        })
-        return api.batchRemove(ids)
-      }).then((response) => {
-        this.$message.success(response.message || '删除成功')
-        this.fetchData()
+      this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
-    }
+        .then(() => {
+          let ids = [];
+          this.multipleSelection.forEach((item) => {
+            ids.push(item.id);
+          });
+          return api.batchRemove(ids);
+        })
+        .then((response) => {
+          this.$message.success(response.message || "删除成功");
+          this.fetchData();
+        });
+    },
+
+    // 分配菜单
+    showAssignAuth(row) {
+      this.$router.push(
+        "/system/assignAuth?id=" + row.id + "&roleName=" + row.roleName
+      );
+    },
   },
 };
 </script>

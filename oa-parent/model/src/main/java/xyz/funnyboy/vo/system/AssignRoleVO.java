@@ -6,7 +6,7 @@ import lombok.Data;
 
 import java.util.List;
 
-@ApiModel(description = "分配菜单")
+@ApiModel(description = "分配角色")
 @Data
 public class AssignRoleVO
 {

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import xyz.funnyboy.auth.service.SysMenuService;
 import xyz.funnyboy.common.result.Result;
 import xyz.funnyboy.model.system.SysMenu;
+import xyz.funnyboy.vo.system.AssignMenuVO;
 
 import java.util.List;
 
@@ -74,6 +75,31 @@ public class SysMenuController
                     Result.ok() :
                     Result.fail()
                           .message("删除失败");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail()
+                         .message(e.getMessage());
+        }
+    }
+
+    @ApiOperation(value = "根据角色获取菜单")
+    @GetMapping("toAssign/{roleId}")
+    public Result<List<SysMenu>> toAssign(
+            @PathVariable
+                    Long roleId) {
+        List<SysMenu> list = sysMenuService.findSysMenuByRoleId(roleId);
+        return Result.ok(list);
+    }
+
+    @ApiOperation(value = "给角色分配菜单")
+    @PostMapping("doAssign")
+    public Result<Object> doAssign(
+            @RequestBody
+                    AssignMenuVO assignMenuVO) {
+        try {
+            sysMenuService.doAssign(assignMenuVO);
+            return Result.ok();
         }
         catch (Exception e) {
             e.printStackTrace();
