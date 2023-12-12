@@ -56,6 +56,29 @@ CREATE TABLE `sys_user_role`
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 11
   DEFAULT CHARSET = utf8 COMMENT ='用户角色';
+
+
+CREATE TABLE `sys_menu`
+(
+   `id`          bigint(20)  NOT NULL AUTO_INCREMENT COMMENT '编号',
+   `parent_id`   bigint(20)  NOT NULL DEFAULT '0' COMMENT '所属上级',
+   `name`        varchar(20) NOT NULL DEFAULT '' COMMENT '名称',
+   `type`        tinyint(3)  NOT NULL DEFAULT '0' COMMENT '类型(0:目录,1:菜单,2:按钮)',
+   `path`        varchar(100)         DEFAULT NULL COMMENT '路由地址',
+   `component`   varchar(100)         DEFAULT NULL COMMENT '组件路径',
+   `perms`       varchar(100)         DEFAULT NULL COMMENT '权限标识',
+   `icon`        varchar(100)         DEFAULT NULL COMMENT '图标',
+   `sort_value`  int(11)              DEFAULT NULL COMMENT '排序',
+   `status`      tinyint(4)           DEFAULT NULL COMMENT '状态(0:禁止,1:正常)',
+   `create_time` timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+   `update_time` timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+   `is_deleted`  tinyint(3)  NOT NULL DEFAULT '0' COMMENT '删除标记（0:不可用 1:可用）',
+   PRIMARY KEY (`id`),
+   KEY `idx_parent_id` (`parent_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 58
+  DEFAULT CHARSET = utf8mb4 COMMENT ='菜单表';
+
 ```
 
 ## 术语

@@ -85,6 +85,26 @@ export const constantRoutes = [
           icon: "el-icon-s-help",
         },
       },
+      // 菜单管理
+      {
+        name: "sysMenu",
+        path: "sysMenu",
+        component: () => import("@/views/system/sysMenu/list"),
+        meta: {
+          title: "菜单管理",
+          icon: "el-icon-s-unfold",
+        },
+      },
+      // 角色授权
+      {
+        path: "assignAuth",
+        component: () => import("@/views/system/sysRole/assignAuth"),
+        meta: {
+          title: "角色授权",
+          activeMenu: "/system/sysRole",
+        },
+        hidden: true,
+      },
     ],
   },
 
