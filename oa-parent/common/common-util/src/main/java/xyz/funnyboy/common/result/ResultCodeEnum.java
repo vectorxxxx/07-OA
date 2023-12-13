@@ -11,7 +11,9 @@ public enum ResultCodeEnum
 
     LOGIN_ERROR(503, "登录失败"),
 
-    PERMISSION(403, "认证失败"),
+    AUTHENTICATION_FAILED(401, "认证失败"),
+
+    NO_PERMISSION(403, "没有权限"),
 
     ;
 

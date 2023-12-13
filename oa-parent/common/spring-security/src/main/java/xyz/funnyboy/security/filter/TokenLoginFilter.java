@@ -1,10 +1,13 @@
 package xyz.funnyboy.security.filter;
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import xyz.funnyboy.common.constant.CommonConstant;
@@ -21,6 +24,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,11 +39,14 @@ public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter
 
     private static final String HTTP_METHOD = "POST";
 
-    public TokenLoginFilter(AuthenticationManager authenticationManager) {
+    private StringRedisTemplate redisTemplate;
+
+    public TokenLoginFilter(AuthenticationManager authenticationManager, StringRedisTemplate redisTemplate) {
         this.setAuthenticationManager(authenticationManager);
         this.setPostOnly(false);
         // 指定登录接口及提交方式，可以指定任意路径
         this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(CommonConstant.LOGIN, HTTP_METHOD));
+        this.redisTemplate = redisTemplate;
     }
 
     /**
@@ -73,10 +80,19 @@ public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter
      */
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) {
+        // 解析自定义用户认证信息
         final CustomUser customUser = (CustomUser) authResult.getPrincipal();
         final SysUser sysUser = customUser.getSysUser();
-        final String token = JwtHelper.createToken(sysUser.getId(), sysUser.getUsername());
+        final String username = customUser.getUsername();
+        final Collection<GrantedAuthority> authorities = customUser.getAuthorities();
 
+        // 通过JWT帮助器生成token
+        final String token = JwtHelper.createToken(sysUser.getId(), sysUser.getUsername());
+        // 保存权限数据到Redis中
+        redisTemplate.opsForValue()
+                     .set(username, JSON.toJSONString(authorities));
+
+        // 组装token数据
         Map<String, Object> map = new HashMap<>();
         map.put("token", token);
         ResponseUtil.out(response, Result.ok(map));

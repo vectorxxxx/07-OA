@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -45,6 +46,7 @@ public class SysRoleController
 
     @ApiOperation(value = "条件分页查询")
     @GetMapping("{page}/{limit}")
+    @PreAuthorize("hasAuthority('bnt.sysRole.list')")
     public Result<Page<SysRole>> pageQueryRole(
             @PathVariable("page")
                     int page,
@@ -64,6 +66,7 @@ public class SysRoleController
 
     @ApiOperation(value = "获取角色")
     @GetMapping("get/{id}")
+    @PreAuthorize("hasAuthority('bnt.sysRole.list')")
     public Result<SysRole> get(
             @PathVariable
                     Long id) {
@@ -73,6 +76,7 @@ public class SysRoleController
 
     @ApiOperation(value = "新增角色")
     @PostMapping("save")
+    @PreAuthorize("hasAuthority('bnt.sysRole.add')")
     public Result<String> save(
             @RequestBody
             @Validated
@@ -88,6 +92,7 @@ public class SysRoleController
 
     @ApiOperation(value = "修改角色")
     @PutMapping("update")
+    @PreAuthorize("hasAuthority('bnt.sysRole.update')")
     public Result<String> updateById(
             @RequestBody
                     SysRole role) {
@@ -97,6 +102,7 @@ public class SysRoleController
 
     @ApiOperation(value = "删除角色")
     @DeleteMapping("remove/{id}")
+    @PreAuthorize("hasAuthority('bnt.sysRole.remove')")
     public Result<String> remove(
             @PathVariable
                     Long id) {
@@ -111,6 +117,7 @@ public class SysRoleController
 
     @ApiOperation(value = "根据id列表删除")
     @DeleteMapping("batchRemove")
+    @PreAuthorize("hasAuthority('bnt.sysRole.remove')")
     public Result<String> batchRemove(
             @RequestBody
                     List<Long> idList) {
