@@ -1,11 +1,13 @@
 package xyz.funnyboy.vo.system;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 登录对象
  */
-@Data
+@Getter
+@Setter
 public class LoginVO
 {
 

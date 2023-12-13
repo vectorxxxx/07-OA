@@ -1,4 +1,4 @@
-package xyz.funnyboy.common.handler;
+package xyz.funnyboy.common.exception;
 
 import lombok.Data;
 import xyz.funnyboy.common.result.ResultCodeEnum;

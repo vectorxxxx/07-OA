@@ -3,6 +3,8 @@ server:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  # 写 xml 必配
+  mapper-locations: classpath*:xyz/funnyboy/*/mapper/xml/*Mapper.xml
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource

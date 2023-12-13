@@ -11,7 +11,7 @@ import xyz.funnyboy.auth.service.SysMenuService;
 import xyz.funnyboy.auth.service.SysRoleMenuService;
 import xyz.funnyboy.auth.service.SysUserService;
 import xyz.funnyboy.auth.util.MenuHelper;
-import xyz.funnyboy.common.handler.VectorXException;
+import xyz.funnyboy.common.exception.VectorXException;
 import xyz.funnyboy.model.system.SysMenu;
 import xyz.funnyboy.model.system.SysRoleMenu;
 import xyz.funnyboy.vo.system.AssignMenuVO;

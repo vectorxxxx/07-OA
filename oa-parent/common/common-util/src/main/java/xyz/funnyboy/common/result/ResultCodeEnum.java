@@ -3,15 +3,16 @@ package xyz.funnyboy.common.result;
 import lombok.Getter;
 
 @Getter
-public enum ResultCodeEnum {
+public enum ResultCodeEnum
+{
+    SUCCESS(200, "成功"),
 
-    SUCCESS(200,"成功"),
-    FAIL(501, "失败"),
-    SERVICE_ERROR(500, "服务异常"),
-    DATA_ERROR(503, "数据异常"),
+    FAIL(500, "失败"),
 
-    LOGIN_AUTH(401, "未登陆"),
-    PERMISSION(403, "没有权限")
+    LOGIN_ERROR(503, "登录失败"),
+
+    PERMISSION(403, "认证失败"),
+
     ;
 
     private Integer code;
