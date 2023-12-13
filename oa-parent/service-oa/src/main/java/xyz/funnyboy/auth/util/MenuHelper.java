@@ -4,41 +4,26 @@ import xyz.funnyboy.model.system.SysMenu;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MenuHelper
 {
     //使用递归方法建菜单
     public static List<SysMenu> buildTree(List<SysMenu> sysMenuList) {
-        //创建list集合，用于最终数据
-        List<SysMenu> trees = new ArrayList<>();
-        //把所有菜单数据进行遍历
-        for (SysMenu sysMenu : sysMenuList) {
-            //递归入口进入
-            //parentId=0是入口
-            if (sysMenu.getParentId() != 0) {
-                continue;
-            }
-            // 找根节点
-            trees.add(getChildren(sysMenu, sysMenuList));
-        }
-        return trees;
+        return sysMenuList.stream()
+                          .filter(menu -> menu.getParentId() == 0)
+                          .map(menu -> getChildren(menu, sysMenuList))
+                          .collect(Collectors.toList());
     }
 
     private static SysMenu getChildren(SysMenu sysMenu, List<SysMenu> sysMenuList) {
         sysMenu.setChildren(new ArrayList<>());
-        //遍历所有菜单数据，判断 id 和 parentId对应关系
-        for (SysMenu it : sysMenuList) {
-            if (sysMenu.getId()
-                       .longValue() != it.getParentId()
-                                         .longValue()) {
-                continue;
-            }
-            if (sysMenu.getChildren() == null) {
-                sysMenu.setChildren(new ArrayList<>());
-            }
-            sysMenu.getChildren()
-                   .add(getChildren(it, sysMenuList));
-        }
+        sysMenuList.stream()
+                   .filter(menu -> menu.getParentId()
+                                       .longValue() == sysMenu.getId()
+                                                              .longValue())
+                   .forEach(menu -> sysMenu.getChildren()
+                                           .add(getChildren(menu, sysMenuList)));
         return sysMenu;
     }
 }

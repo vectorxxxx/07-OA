@@ -1,6 +1,9 @@
 package xyz.funnyboy.auth.controller;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import xyz.funnyboy.auth.service.SysUserService;
@@ -12,6 +15,7 @@ import xyz.funnyboy.common.util.MD5;
 import xyz.funnyboy.model.system.SysUser;
 import xyz.funnyboy.vo.system.LoginVO;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,9 +24,12 @@ import java.util.Map;
 @RequestMapping("/admin/system/index")
 public class IndexController
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(IndexController.class);
+
     @Autowired
     private SysUserService sysUserService;
 
+    @ApiOperation(value = "用户登录")
     @PostMapping("/login")
     public Result<Map<String, Object>> login(
             @RequestBody
@@ -44,15 +51,23 @@ public class IndexController
         return Result.ok(param);
     }
 
+    @ApiOperation(value = "获取用户信息")
     @GetMapping("/info")
-    public Result<Map<String, Object>> info() {
-        Map<String, Object> param = new HashMap<>();
-        param.put("roles", "[admin]");
-        param.put("name", "admin");
-        param.put("avatar", "https://crowdfunding-vectorx.oss-cn-shanghai.aliyuncs.com/20231210/1.png");
-        return Result.ok(param);
+    public Result<Object> info(HttpServletRequest request) {
+        try {
+            // 获取 JWT 令牌中的 username
+            final String username = JwtHelper.getUsername(request.getHeader("token"));
+            Map<String, Object> userInfo = sysUserService.getUserInfo(username);
+            return Result.ok(userInfo);
+        }
+        catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            return Result.fail()
+                         .message(e.getMessage());
+        }
     }
 
+    @ApiOperation(value = "退出登录")
     @PostMapping("/logout")
     public Result<String> logout() {
         return Result.ok();

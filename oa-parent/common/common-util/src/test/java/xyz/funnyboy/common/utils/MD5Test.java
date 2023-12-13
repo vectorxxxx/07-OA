@@ -13,6 +13,11 @@ public class MD5Test
 
     @Test
     public void testEncrypt() {
-        LOGGER.info(MD5.encrypt("111111"));
+        LOGGER.info(MD5.encrypt("admin"));
+        LOGGER.info(MD5.encrypt("test"));
+        LOGGER.info(MD5.encrypt("test2"));
+        LOGGER.info(MD5.encrypt("test3"));
+        LOGGER.info(MD5.encrypt("test4"));
+        LOGGER.info(MD5.encrypt("test5"));
     }
 }

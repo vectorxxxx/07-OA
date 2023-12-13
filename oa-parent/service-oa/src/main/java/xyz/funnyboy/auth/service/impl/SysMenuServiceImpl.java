@@ -5,16 +5,20 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import xyz.funnyboy.auth.mapper.SysMenuMapper;
 import xyz.funnyboy.auth.service.SysMenuService;
 import xyz.funnyboy.auth.service.SysRoleMenuService;
+import xyz.funnyboy.auth.service.SysUserService;
 import xyz.funnyboy.auth.util.MenuHelper;
 import xyz.funnyboy.common.handler.VectorXException;
 import xyz.funnyboy.model.system.SysMenu;
 import xyz.funnyboy.model.system.SysRoleMenu;
 import xyz.funnyboy.vo.system.AssignMenuVO;
+import xyz.funnyboy.vo.system.RouterVO;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -24,6 +28,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 {
     @Autowired
     private SysRoleMenuService sysRoleMenuService;
+
+    @Autowired
+    private SysUserService sysUserService;
 
     /**
      * 菜单树形数据
@@ -106,5 +113,83 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                                                          .collect(Collectors.toList());
         sysRoleMenuService.remove(new LambdaQueryWrapper<SysRoleMenu>().eq(SysRoleMenu::getRoleId, roleId));
         sysRoleMenuService.saveBatch(roleMenuList);
+    }
+
+    @Override
+    public List<RouterVO> findUserMenuList(Long userId) {
+        List<SysMenu> menuList;
+        final String username = sysUserService.getById(userId)
+                                              .getUsername();
+        // 管理员
+        if ("admin".equals(username)) {
+            menuList = this.list(new LambdaQueryWrapper<SysMenu>().eq(SysMenu::getStatus, 1)
+                                                                  .orderByAsc(SysMenu::getSortValue));
+        }
+        else {
+            menuList = this.getBaseMapper()
+                           .findMenuListByUserId(userId);
+        }
+
+        // 构建树形结构
+        final List<SysMenu> treeList = MenuHelper.buildTree(menuList);
+
+        // 构建路由
+        return this.buildRouters(treeList);
+    }
+
+    /**
+     * 获取用户按钮权限
+     *
+     * @param userId
+     * @return {@link List}<{@link String}>
+     */
+    @Override
+    public List<String> findUserPermsList(Long userId) {
+        List<SysMenu> menuList;
+        final String username = sysUserService.getById(userId)
+                                              .getUsername();
+        // 管理员
+        if ("admin".equals(username)) {
+            menuList = this.list(new LambdaQueryWrapper<SysMenu>().eq(SysMenu::getStatus, 1));
+        }
+        else {
+            menuList = this.getBaseMapper()
+                           .findMenuListByUserId(userId);
+        }
+
+        return menuList.stream()
+                       .filter(item -> item.getType() == 2)
+                       .map(SysMenu::getPerms)
+                       .collect(Collectors.toList());
+    }
+
+    /**
+     * 根据菜单构建路由
+     *
+     * @param menuList
+     * @return {@link List}<{@link RouterVO}>
+     */
+    private List<RouterVO> buildRouters(List<SysMenu> menuList) {
+        final LinkedList<RouterVO> routers = new LinkedList<>();
+        for (SysMenu menu : menuList) {
+            RouterVO router = RouterVO.build(menu, false);
+            final List<SysMenu> children = menu.getChildren();
+            // 菜单
+            if (menu.getType() == 1) {
+                final List<SysMenu> hiddenMenuList = children.stream()
+                                                             .filter(item -> !StringUtils.isEmpty(item.getComponent()))
+                                                             .collect(Collectors.toList());
+                for (SysMenu hiddenMenu : hiddenMenuList) {
+                    RouterVO hiddenRouter = RouterVO.build(hiddenMenu, true);
+                    routers.add(hiddenRouter);
+                }
+            }
+            else if (!CollectionUtils.isEmpty(children)) {
+                router.setAlwaysShow(true);
+                router.setChildren(buildRouters(children));
+            }
+            routers.add(router);
+        }
+        return routers;
     }
 }

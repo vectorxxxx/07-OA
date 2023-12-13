@@ -2,7 +2,12 @@
   <div class="app-container">
     <!-- 工具条 -->
     <div class="tools-div">
-      <el-button type="success" icon="el-icon-plus" size="mini" @click="add()"
+      <el-button
+        type="success"
+        icon="el-icon-plus"
+        size="mini"
+        @click="add()"
+        :disabled="$hasBP('bnt.sysRole.add') === false"
         >添 加</el-button
       >
       <el-button

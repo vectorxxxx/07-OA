@@ -37,11 +37,11 @@ export const constantRoutes = [
     hidden: true,
   },
 
-  {
-    path: "/404",
-    component: () => import("@/views/404"),
-    hidden: true,
-  },
+  // {
+  //   path: "/404",
+  //   component: () => import("@/views/404"),
+  //   hidden: true,
+  // },
 
   {
     path: "/",
@@ -56,60 +56,61 @@ export const constantRoutes = [
       },
     ],
   },
-  // 系统管理
-  {
-    path: "/system",
-    component: Layout,
-    meta: {
-      title: "系统管理",
-      icon: "el-icon-s-tools",
-    },
-    alwaysShow: true,
-    children: [
-      // 用户管理
-      {
-        name: "sysUser",
-        path: "sysUser",
-        component: () => import("@/views/system/sysUser/list"),
-        meta: {
-          title: "用户管理",
-          icon: "el-icon-s-custom",
-        },
-      },
-      // 角色管理
-      {
-        path: "sysRole",
-        component: () => import("@/views/system/sysRole/list"),
-        meta: {
-          title: "角色管理",
-          icon: "el-icon-s-help",
-        },
-      },
-      // 菜单管理
-      {
-        name: "sysMenu",
-        path: "sysMenu",
-        component: () => import("@/views/system/sysMenu/list"),
-        meta: {
-          title: "菜单管理",
-          icon: "el-icon-s-unfold",
-        },
-      },
-      // 角色授权
-      {
-        path: "assignAuth",
-        component: () => import("@/views/system/sysRole/assignAuth"),
-        meta: {
-          title: "角色授权",
-          activeMenu: "/system/sysRole",
-        },
-        hidden: true,
-      },
-    ],
-  },
 
-  // 404 page must be placed at the end !!!
-  { path: "*", redirect: "/404", hidden: true },
+  // // 系统管理
+  // {
+  //   path: "/system",
+  //   component: Layout,
+  //   meta: {
+  //     title: "系统管理",
+  //     icon: "el-icon-s-tools",
+  //   },
+  //   alwaysShow: true,
+  //   children: [
+  //     // 用户管理
+  //     {
+  //       name: "sysUser",
+  //       path: "sysUser",
+  //       component: () => import("@/views/system/sysUser/list"),
+  //       meta: {
+  //         title: "用户管理",
+  //         icon: "el-icon-s-custom",
+  //       },
+  //     },
+  //     // 角色管理
+  //     {
+  //       path: "sysRole",
+  //       component: () => import("@/views/system/sysRole/list"),
+  //       meta: {
+  //         title: "角色管理",
+  //         icon: "el-icon-s-help",
+  //       },
+  //     },
+  //     // 菜单管理
+  //     {
+  //       name: "sysMenu",
+  //       path: "sysMenu",
+  //       component: () => import("@/views/system/sysMenu/list"),
+  //       meta: {
+  //         title: "菜单管理",
+  //         icon: "el-icon-s-unfold",
+  //       },
+  //     },
+  //     // 角色授权
+  //     {
+  //       path: "assignAuth",
+  //       component: () => import("@/views/system/sysRole/assignAuth"),
+  //       meta: {
+  //         title: "角色授权",
+  //         activeMenu: "/system/sysRole",
+  //       },
+  //       hidden: true,
+  //     },
+  //   ],
+  // },
+
+  // // 404 page must be placed at the end !!!
+  // { path: "*", redirect: "/404", hidden: true },
 ];
 
 const createRouter = () =>

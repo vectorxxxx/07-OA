@@ -3,6 +3,8 @@ package xyz.funnyboy.auth.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import xyz.funnyboy.model.system.SysUser;
 
+import java.util.Map;
+
 public interface SysUserService extends IService<SysUser>
 {
     /**
@@ -21,4 +23,12 @@ public interface SysUserService extends IService<SysUser>
      * @return {@link SysUser}
      */
     SysUser getByUsername(String username);
+
+    /**
+     * 根据用户名获取用户登录信息
+     *
+     * @param username
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    Map<String, Object> getUserInfo(String username);
 }
