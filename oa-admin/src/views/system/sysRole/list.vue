@@ -267,7 +267,7 @@ export default {
     // 分配菜单
     showAssignAuth(row) {
       this.$router.push(
-        "/system/sysRole/assignAuth?id=" + row.id + "&roleName=" + row.roleName
+        "/system/assignAuth?id=" + row.id + "&roleName=" + row.roleName
       );
     },
   },
