@@ -72,7 +72,7 @@ public class RouterVO
     private static String getRouterPath(SysMenu menu) {
         String routerPath;
         if (menu.getParentId()
-                .intValue() == 0) {
+                .intValue() != 0) {
             routerPath = menu.getPath();
         }
         else {
