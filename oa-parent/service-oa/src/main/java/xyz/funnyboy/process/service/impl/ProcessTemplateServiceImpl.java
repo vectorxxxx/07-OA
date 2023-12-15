@@ -6,9 +6,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import xyz.funnyboy.model.process.ProcessTemplate;
 import xyz.funnyboy.model.process.ProcessType;
 import xyz.funnyboy.process.mapper.ProcessTemplateMapper;
+import xyz.funnyboy.process.service.ProcessService;
 import xyz.funnyboy.process.service.ProcessTemplateService;
 import xyz.funnyboy.process.service.ProcessTypeService;
 
@@ -22,6 +24,9 @@ public class ProcessTemplateServiceImpl extends ServiceImpl<ProcessTemplateMappe
 {
     @Resource
     private ProcessTypeService processTypeService;
+
+    @Resource
+    private ProcessService processService;
 
     /**
      * 分页查询
@@ -69,9 +74,13 @@ public class ProcessTemplateServiceImpl extends ServiceImpl<ProcessTemplateMappe
     @Override
     public void publish(Long id) {
         final ProcessTemplate processTemplate = this.getById(id);
-        processTemplate.setStatus(1);
-        this.updateById(processTemplate);
-        
-        //TODO 部署流程定义，后续完善
+        final String processDefinitionPath = processTemplate.getProcessDefinitionPath();
+        if (!StringUtils.isEmpty(processDefinitionPath)) {
+            // 发布在线流程设计
+            processService.deployByZip(processDefinitionPath);
+            // 置状态
+            processTemplate.setStatus(1);
+            this.updateById(processTemplate);
+        }
     }
 }

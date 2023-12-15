@@ -173,7 +173,7 @@ public class ProcessTemplateController
         }
 
         // 根据上传地址后续部署流程定义，文件名称为流程定义的默认key
-        final String processDefinitionPath = Paths.get("processes", fileName)
+        final String processDefinitionPath = Paths.get("process", fileName)
                                                   .toString();
         final String processDefinitionKey = fileName.substring(0, fileName.lastIndexOf("."));
 
