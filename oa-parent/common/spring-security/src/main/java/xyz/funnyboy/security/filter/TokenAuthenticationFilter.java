@@ -13,6 +13,7 @@ import xyz.funnyboy.common.jwt.JwtHelper;
 import xyz.funnyboy.common.result.Result;
 import xyz.funnyboy.common.result.ResultCodeEnum;
 import xyz.funnyboy.common.util.ResponseUtil;
+import xyz.funnyboy.security.custom.LoginUserInfoHelper;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -69,11 +70,15 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter
         }
 
         // 取出 username
+        final Long userId = JwtHelper.getUserId(token);
         final String username = JwtHelper.getUsername(token);
         logger.info("username=" + username);
         if (StringUtils.isEmpty(username)) {
             return null;
         }
+        // 通过 ThreadLocal 记录当前登录信息
+        LoginUserInfoHelper.setUserId(userId);
+        LoginUserInfoHelper.setUsername(JwtHelper.getUsername(token));
 
         // 取出Redis缓存中的权限信息
         final String authoritiesStr = redisTemplate.opsForValue()

@@ -22,6 +22,8 @@ import java.util.Map;
 @Api(tags = "后台登录管理")
 @RestController
 @RequestMapping("/admin/system/index")
+// 跨域
+@CrossOrigin
 public class IndexController
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(IndexController.class);
@@ -71,5 +73,19 @@ public class IndexController
     @PostMapping("/logout")
     public Result<String> logout() {
         return Result.ok();
+    }
+
+    @ApiOperation(value = "获取当前用户基本信息")
+    @GetMapping("getCurrentUser")
+    public Result<Object> getCurrentUser() {
+        try {
+            final Map<String, Object> currentUser = sysUserService.getCurrentUser();
+            return Result.ok(currentUser);
+        }
+        catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            return Result.fail()
+                         .message(e.getMessage());
+        }
     }
 }

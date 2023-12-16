@@ -8,6 +8,7 @@ import xyz.funnyboy.auth.mapper.SysUserMapper;
 import xyz.funnyboy.auth.service.SysMenuService;
 import xyz.funnyboy.auth.service.SysUserService;
 import xyz.funnyboy.model.system.SysUser;
+import xyz.funnyboy.security.custom.LoginUserInfoHelper;
 import xyz.funnyboy.vo.system.RouterVO;
 
 import java.util.HashMap;
@@ -73,5 +74,22 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         result.put("routers", routers);
         result.put("buttons", buttons);
         return result;
+    }
+
+    /**
+     * 获取当前用户
+     *
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    @Override
+    public Map<String, Object> getCurrentUser() {
+        Map<String, Object> map = new HashMap<>();
+        final SysUser sysUser = baseMapper.selectById(LoginUserInfoHelper.getUserId());
+        if (sysUser == null) {
+            return map;
+        }
+        map.put("name", sysUser.getName());
+        map.put("phone", sysUser.getPhone());
+        return map;
     }
 }

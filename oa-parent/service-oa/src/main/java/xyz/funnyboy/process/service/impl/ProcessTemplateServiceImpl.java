@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -14,7 +15,6 @@ import xyz.funnyboy.process.service.ProcessService;
 import xyz.funnyboy.process.service.ProcessTemplateService;
 import xyz.funnyboy.process.service.ProcessTypeService;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,10 +22,10 @@ import java.util.stream.Collectors;
 @Service
 public class ProcessTemplateServiceImpl extends ServiceImpl<ProcessTemplateMapper, ProcessTemplate> implements ProcessTemplateService
 {
-    @Resource
+    @Autowired
     private ProcessTypeService processTypeService;
 
-    @Resource
+    @Autowired
     private ProcessService processService;
 
     /**

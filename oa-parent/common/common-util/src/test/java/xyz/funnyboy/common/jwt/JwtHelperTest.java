@@ -12,8 +12,25 @@ public class JwtHelperTest
 
     @Test
     public void test() {
-        final String token = JwtHelper.createToken(1L, "funnyboy");
+        final String token = JwtHelper.createToken(13L, "admin");
+        LOGGER.info(token);
         LOGGER.info(String.valueOf(JwtHelper.getUserId(token)));
         LOGGER.info(JwtHelper.getUsername(token));
+    }
+
+    @Test
+    public void test2() {
+        String token = JwtHelper.createToken(13L, "admin");
+        LOGGER.info(token);
+        token = JwtHelper.createToken(14L, "zhangsan");
+        LOGGER.info(token);
+        token = JwtHelper.createToken(15L, "lisi");
+        LOGGER.info(token);
+        token = JwtHelper.createToken(16L, "test3");
+        LOGGER.info(token);
+        token = JwtHelper.createToken(17L, "test4");
+        LOGGER.info(token);
+        token = JwtHelper.createToken(18L, "zhangsan01");
+        LOGGER.info(token);
     }
 }

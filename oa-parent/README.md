@@ -150,6 +150,24 @@ CREATE TABLE `oa_process`
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 2
   DEFAULT CHARSET = utf8 COMMENT ='审批类型';
+
+
+CREATE TABLE `oa_process_record`
+(
+   `id`              bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
+   `process_id`      bigint(20) NOT NULL DEFAULT '0' COMMENT '审批流程id',
+   `description`     varchar(255)        DEFAULT NULL COMMENT '审批描述',
+   `status`          tinyint(3)          DEFAULT '0' COMMENT '状态',
+   `operate_user_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '操作用户id',
+   `operate_user`    varchar(20)         DEFAULT NULL COMMENT '操作用户',
+   `create_time`     timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+   `update_time`     timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+   `is_deleted`      tinyint(3) NOT NULL DEFAULT '0' COMMENT '删除标记（0:不可用 1:可用）',
+   PRIMARY KEY (`id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 2
+  DEFAULT CHARSET = utf8 COMMENT ='审批记录';
+
 ```
 
 ## 术语
