@@ -74,18 +74,4 @@ public class IndexController
     public Result<String> logout() {
         return Result.ok();
     }
-
-    @ApiOperation(value = "获取当前用户基本信息")
-    @GetMapping("getCurrentUser")
-    public Result<Object> getCurrentUser() {
-        try {
-            final Map<String, Object> currentUser = sysUserService.getCurrentUser();
-            return Result.ok(currentUser);
-        }
-        catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return Result.fail()
-                         .message(e.getMessage());
-        }
-    }
 }

@@ -168,6 +168,23 @@ CREATE TABLE `oa_process_record`
   AUTO_INCREMENT = 2
   DEFAULT CHARSET = utf8 COMMENT ='审批记录';
 
+
+CREATE TABLE `wechat_menu`
+(
+   `id`          bigint(20) NOT NULL AUTO_INCREMENT COMMENT '编号',
+   `parent_id`   bigint(20)          DEFAULT NULL COMMENT '上级id',
+   `name`        varchar(50)         DEFAULT NULL COMMENT '菜单名称',
+   `type`        varchar(10)         DEFAULT NULL COMMENT '类型',
+   `url`         varchar(100)        DEFAULT NULL COMMENT '网页 链接，用户点击菜单可打开链接',
+   `meun_key`    varchar(20)         DEFAULT NULL COMMENT '菜单KEY值，用于消息接口推送',
+   `sort`        tinyint(3)          DEFAULT NULL COMMENT '排序',
+   `create_time` timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+   `update_time` timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+   `is_deleted`  tinyint(3) NOT NULL DEFAULT '0',
+   PRIMARY KEY (`id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 10
+  DEFAULT CHARSET = utf8 COMMENT ='菜单';
 ```
 
 ## 术语

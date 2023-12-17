@@ -14,9 +14,13 @@ import xyz.funnyboy.common.result.Result;
 import xyz.funnyboy.model.system.SysUser;
 import xyz.funnyboy.vo.system.SysUserQueryVO;
 
+import java.util.Map;
+
 @Api(tags = "用户管理")
 @RestController
 @RequestMapping("/admin/system/sysUser")
+// 跨域
+@CrossOrigin
 public class SysUserController
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(SysUserController.class);
@@ -141,6 +145,20 @@ public class SysUserController
                     Result.ok() :
                     Result.fail()
                           .message("更新失败");
+        }
+        catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            return Result.fail()
+                         .message(e.getMessage());
+        }
+    }
+
+    @ApiOperation(value = "获取当前用户基本信息")
+    @GetMapping("getCurrentUser")
+    public Result<Object> getCurrentUser() {
+        try {
+            final Map<String, Object> currentUser = sysUserService.getCurrentUser();
+            return Result.ok(currentUser);
         }
         catch (Exception e) {
             LOGGER.error(e.getMessage(), e);

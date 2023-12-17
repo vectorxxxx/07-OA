@@ -21,11 +21,12 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import xyz.funnyboy.auth.service.SysUserService;
 import xyz.funnyboy.model.process.Process;
 import xyz.funnyboy.model.process.ProcessRecord;
@@ -40,6 +41,7 @@ import xyz.funnyboy.vo.process.ApprovalVO;
 import xyz.funnyboy.vo.process.ProcessFormVO;
 import xyz.funnyboy.vo.process.ProcessQueryVO;
 import xyz.funnyboy.vo.process.ProcessVO;
+import xyz.funnyboy.wechat.service.MessageService;
 
 import java.io.InputStream;
 import java.util.*;
@@ -81,6 +83,9 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
     @Autowired
     private HistoryService historyService;
 
+    @Autowired
+    private MessageService messageService;
+
     @Override
     public IPage<ProcessVO> selectPage(Page<ProcessVO> pageParam, ProcessQueryVO processQueryVO) {
         return baseMapper.selectPage(pageParam, processQueryVO);
@@ -112,6 +117,7 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
      *
      * @param processFormVO 流程表单 VO
      */
+    @Transactional
     @Override
     public void startUp(ProcessFormVO processFormVO) {
         // 1、查询用户信息
@@ -157,17 +163,22 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
         final List<Task> taskList = this.getCurrentTaskList(processInstanceId);
         if (!CollectionUtils.isEmpty(taskList)) {
             // 获取审批人列表
-            final String[] assigneeArr = taskList.stream()
-                                                 .map(task -> {
-                                                     final String assignee = task.getAssignee();
-                                                     final SysUser user = sysUserService.getByUsername(assignee);
-                                                     if (user == null) {
-                                                         return assignee;
-                                                     }
-                                                     return user.getName();
-                                                 })
-                                                 .toArray(String[]::new);
-            process.setDescription("等待" + StringUtils.join(assigneeArr, "、") + "审批");
+            List<String> assigneeList = new ArrayList<>();
+            for (Task task : taskList) {
+                final String taskAssignee = task.getAssignee();
+                if (StringUtils.isEmpty(taskAssignee)) {
+                    continue;
+                }
+                final String[] assigneeArr = taskAssignee.split(",");
+                for (String assignee : assigneeArr) {
+                    final SysUser user = sysUserService.getByUsername(assignee);
+                    assigneeList.add(user.getName());
+
+                    //推送消息给下一个审批人
+                    messageService.pushPendingMessage(process.getId(), user.getId(), task.getId());
+                }
+            }
+            process.setDescription("等待" + org.apache.commons.lang3.StringUtils.join(assigneeList.toArray(), "、") + "审批");
         }
         this.updateById(process);
 
@@ -228,7 +239,7 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
     /**
      * 显示审批详情
      *
-     * @param id
+     * @param id 编号
      * @return {@link Map}<{@link String}, {@link Object}>
      */
     @Override
@@ -248,8 +259,14 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
         // 5、计算当前用户是否可以审批，能够查看详情的用户不是都能审批，审批后也不能重复审批
         final String username = LoginUserInfoHelper.getUsername();
         boolean isApprove = taskList.stream()
-                                    .anyMatch(task -> task.getAssignee()
-                                                          .equals(username));
+                                    .anyMatch(task -> {
+                                        final String taskAssignee = task.getAssignee();
+                                        if (StringUtils.isEmpty(taskAssignee)) {
+                                            return false;
+                                        }
+                                        final List<String> assigneeList = Arrays.asList(taskAssignee.split(","));
+                                        return assigneeList.contains(username);
+                                    });
 
         // 6、组装审批详情信息
         Map<String, Object> map = new HashMap<>();
@@ -276,7 +293,8 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
         variables.forEach((key, value) -> log.info("Key = " + key + ", Value = " + value));
 
         // 同意
-        if (approvalVO.getStatus() == 1) {
+        final Integer status = approvalVO.getStatus();
+        if (status == 1) {
             final Map<String, Object> variablesTemp = new HashMap<>();
             taskService.complete(taskId, variablesTemp);
         }
@@ -286,27 +304,36 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
         }
 
         // 保存审批记录
-        final String description = approvalVO.getStatus() == 1 ?
+        final String description = status == 1 ?
                 "同意" :
                 "驳回";
-        processRecordService.record(processId, approvalVO.getStatus(), description);
+        processRecordService.record(processId, status, description);
 
         // 计算下一个审批人
         final Process process = this.getById(processId);
         final List<Task> taskList = this.getCurrentTaskList(process.getProcessInstanceId());
         if (!CollectionUtils.isEmpty(taskList)) {
             // 流程负责人
-            final String[] assigneeArr = taskList.stream()
-                                                 .map(task -> {
-                                                     final String assignee = task.getAssignee();
-                                                     final SysUser user = sysUserService.getByUsername(assignee);
-                                                     if (user == null) {
-                                                         return assignee;
-                                                     }
-                                                     return user.getName();
-                                                 })
-                                                 .toArray(String[]::new);
-            process.setDescription("等待" + StringUtils.join(assigneeArr, "、") + "审批");
+            List<String> assigneeList = new ArrayList<>();
+            for (Task task : taskList) {
+                final String taskAssignee = task.getAssignee();
+                if (StringUtils.isEmpty(taskAssignee)) {
+                    continue;
+                }
+                final String[] assigneeArr = taskAssignee.split(",");
+                for (String assignee : assigneeArr) {
+                    SysUser sysUser = sysUserService.getByUsername(assignee);
+                    if (sysUser == null) {
+                        continue;
+                    }
+                    assigneeList.add(sysUser.getName());
+
+                    //推送消息给下一个审批人
+                    messageService.pushPendingMessage(process.getId(), sysUser.getId(), task.getId());
+                }
+            }
+
+            process.setDescription("等待" + org.apache.commons.lang3.StringUtils.join(assigneeList.toArray(), "、") + "审批");
             // 状态（0：默认 1：审批中 2：审批通过 -1：驳回）
             process.setStatus(1);
         }
@@ -320,6 +347,7 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
         }
 
         // 更新流程信息，推送消息给申请人
+        messageService.pushProcessedMessage(process.getId(), process.getUserId(), status);
         this.updateById(process);
     }
 

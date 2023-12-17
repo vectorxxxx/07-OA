@@ -1,20 +1,18 @@
-import request from '@/utils/request'
-
+import request from "@/utils/request";
 
 export default {
-
-  bindPhone(bindPhoneVo) {
+  bindPhone(bindPhoneVO) {
     return request({
       url: `/admin/wechat/bindPhone`,
-      method: 'post',
-      data: bindPhoneVo
-    })
+      method: "post",
+      data: bindPhoneVO,
+    });
   },
 
   getCurrentUser() {
     return request({
-      url: `/admin/system/sysUser/getCurrentUser/`,
-      method: 'get'
-    })
+      url: `/admin/system/sysUser/getCurrentUser`,
+      method: "get",
+    });
   },
-}
+};

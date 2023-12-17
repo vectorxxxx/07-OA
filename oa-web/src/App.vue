@@ -3,10 +3,10 @@
     <router-view />
 
     <el-dialog title="绑定手机" :visible.sync="dialogVisible" width="80%">
-      <el-form ref="dataForm" :model="bindPhoneVo" size="small">
+      <el-form ref="dataForm" :model="bindPhoneVO" size="small">
         <h4>绑定你的手机号，建立云尚办公系统关联关系</h4>
         <el-form-item label="手机号码">
-          <el-input v-model="bindPhoneVo.phone" />
+          <el-input v-model="bindPhoneVO.phone" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -28,7 +28,7 @@ export default {
     return {
       show: true,
       dialogVisible: false,
-      bindPhoneVo: {
+      bindPhoneVO: {
         openId: "",
         phone: "",
       },
@@ -37,7 +37,7 @@ export default {
 
   created() {
     // TODO 处理微信授权登录
-    // this.wechatLogin();
+    this.wechatLogin();
   },
 
   methods: {
@@ -46,33 +46,35 @@ export default {
       let token = this.getQueryString("token") || "";
       let openId = this.getQueryString("openId") || "";
       // token === '' && openId != '' 只要这种情况，未绑定账号
-      if (token === "" && openId != "") {
+      if (!token && !!openId) {
         // 绑定账号
-        this.bindPhoneVo.openId = openId;
+        this.bindPhoneVO.openId = openId;
         this.dialogVisible = true;
       } else {
         // 如果绑定了，授权登录直接返回token
-        if (token !== "") {
-          window.localStorage.setItem("token", token);
-        }
         token = window.localStorage.getItem("token") || "";
-        if (token == "") {
-          let url = window.location.href.replace("#", "guiguoa");
+        if (!!token) {
+          window.localStorage.removeItem("token");
+          window.localStorage.setItem("token", token);
+        } else {
+          let url = window.location.href.replace("#", "vectorx");
           window.location =
-            "http://oa.atguigu.cn/admin/wechat/authorize?returnUrl=" + url;
+            "http://funnymudpee.natapp1.cc/admin/wechat/authorize?returnUrl=" +
+            url;
         }
       }
     },
 
     saveBind() {
-      if (this.bindPhoneVo.phone.length != 11) {
+      if (this.bindPhoneVO.phone.length != 11) {
         alert("手机号码格式不正确");
         return;
       }
-      userInfoApi.bindPhone(this.bindPhoneVo).then((response) => {
+
+      userInfoApi.bindPhone(this.bindPhoneVO).then((response) => {
         window.localStorage.setItem("token", response.data);
         this.dialogVisible = false;
-        window.location = "http://oa.atguigu.cn";
+        window.location = "http://funnyboy.nat300.top";
       });
     },
 
