@@ -46,3 +46,10 @@ spring:
     history-level: full
     #   校验流程文件，默认校验 resources 下的 process 文件夹的流程文件
     check-process-definitions: true
+wechat:
+  mpAppId: wx7d5d9fae8a9832b9
+  mpAppSecret: 1a5e23288e3dce0779a9b5dc9c420604
+  # 前端接口
+  frontUrl: http://funnyboy.nat300.top
+  # 授权回调获取用户信息接口地址
+  backUrl: http://funnymudpee.natapp1.cc/admin/wechat/userInfo
